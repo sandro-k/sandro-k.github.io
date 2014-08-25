@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>mqtt connection demo</title>
+  <!--<script src="../platform/platform.js"></script>-->
+  <script src="../../bower_components/platform/platform.js"></script>
+  <link rel="import" href="mqtt-subscription-ui.html">
+  <link rel="import" href="../core-icons/core-icons.html"/>
+  <link rel="import" href="../core-icon/core-icon.html"/>
+</head>
+<body unresolved>
+
+<polymer-element name="demo-tag">
+  <!-- outermost template defines the element's shadow DOM -->
+  <template>
+    <mqtt-subscription-ui topic="{{topic}}" messages="{{messages}}"></mqtt-subscription-ui>
+  </template>
+
+  <script>
+    Polymer('demo-tag', {
+
+      created: function () {
+        console.log("1");
+
+      },
+
+      ready: function () {
+        this.topic = "presence";
+        this.messages = [];
+        this.messages.push(
+            {
+              "cmd": "publish",
+              "retain": false,
+              "qos": 0, "dup": false,
+              "length": 20,
+              "topic": "presence",
+              "payload": "Hello mqtt",
+              "timestamp": 1405585626694
+            }
+        )
+      }
+
+    });
+  </script>
+</polymer-element>
+
+<demo-tag></demo-tag>
+
+
+</body>
+</html>

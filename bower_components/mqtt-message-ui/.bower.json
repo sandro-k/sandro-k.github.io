@@ -1,0 +1,44 @@
+{
+  "name": "mqtt-message-ui",
+  "authors": [
+    "Sandro Kock <sandro.kock@gmail.com>"
+  ],
+  "description": "A polymer element for pretty code",
+  "main": [
+    "mqtt-message-ui.html"
+  ],
+  "keywords": [
+    "mqtt",
+    "polymer",
+    "web-components",
+    "custom-elements",
+    "polymer-elements"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sandro-k/mqtt-message-ui",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "style.scss",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.3.3",
+    "moment": "~2.7.0",
+    "google-code-prettify": "~1.0.1",
+    "core-elements": "Polymer/core-elements#~0.3.3",
+    "code-pretty": "sandro-k/code-pretty#master",
+    "mqtt-message-detail-ui": "sandro-k/mqtt-message-detail-ui#master"
+  },
+  "_release": "13052ca555",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "13052ca555214d2dcb47319929c7c63d88ef0154"
+  },
+  "_source": "git://github.com/sandro-k/mqtt-message-ui.git",
+  "_target": "master",
+  "_originalSource": "sandro-k/mqtt-message-ui"
+}

@@ -1,0 +1,190 @@
+<!--
+/**
+ * The `code-pretty` element uses [google-code-prettify](https://code.google.com/p/google-code-prettify/) to prettify code that is within the element or set via the `text` attribute
+ *
+ * ## WARN
+ * Currently the element uses `innerHTML` to set output the prittified HTML, this can be potentiality dangerous if the source of the sourcecode is not known
+ *
+ * @element code-pretty
+ * @homepage https://github.com/sandro-k/code-pretty
+ *
+ * ## Example
+ *
+ *      <code-pretty>{ "hello": "world!" }</code-pretty>
+ */
+
+-->
+<!--
+  TODOS
+  todo(sandro-k) look at `core-componentpage` they use google-code-prettify as well
+-->
+
+<!--polymer-->
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../core-collapse/core-collapse.html"/>
+<link rel="import" href="../core-icon/core-icon.html"/>
+<link rel="import" href="../core-icons/core-icons.html"/>
+
+
+<!--code pretty-->
+<script src="../google-code-prettify/src/prettify.js?autoload=false"></script>
+
+<!--element definition-->
+<polymer-element name="code-pretty" attributes="lang, text, numbering, collapsed">
+  <template>
+    <link rel="stylesheet" href="../google-code-prettify/src/prettify.css"/>
+    <link rel="stylesheet" href="custom.css"/>
+    <div class="wrapper">
+      <div class="head" on-click="{{handelopen}}">
+      <span class="{{ {collapsed:collapsed } | tokenList}}">
+        {{lang}}
+        <template bind if="{{!collapsed}}">
+          <core-icon icon="expand-less"></core-icon>
+        </template>
+      <template bind if="{{collapsed}}">
+        <core-icon icon="expand-more"></core-icon>
+      </template>
+      </span>
+      </div>
+      <!--host element for the source code-->
+      <core-collapse id="collapse" opened?={{!collapsed}}>
+      <pre id="code" class="prettyprint" part="code"></pre>
+      </core-collapse>
+      <template bind if="{{collapsed}}">
+        <span class="inlinetext">{{inlinetext}}</span>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer("code-pretty", {
+      formattedCode: '',
+      codeLang: [],
+
+      inlinetext: '',
+
+      publish: {
+        /**
+         * The language of the code element
+         *
+         * @attribute lang
+         * @type string
+         * @default ''
+         */
+        lang: '',
+
+        /**
+         * True if the element is collapsed and False if expanded
+         *
+         * @attribute collapsed
+         * @type boolean
+         * @default false
+         */
+        collapsed: false,
+        
+        changed: false,
+        
+        /**
+         * The soruce code that will be formated
+         *
+         * @attribute text
+         * @type string
+         * @default ''
+         */
+        text: ''
+      },
+
+      created: function () {
+        // add language handler
+        this.codeLang.json = this.parsAndFormatJson;
+      },
+      ready: function () {
+        var tmp = this.trim(this.textContent).trim();
+        if (tmp.length > 0) {
+          this.text = tmp;
+        }
+        var that = this;
+
+        this.$.collapse.addEventListener(
+            'core-transitionend',
+            function (e) {
+              console.log(e);
+              console.log("core-transitionend");
+            }
+        );
+        this.$.collapse.addEventListener(
+            'transitionend',
+            function (e) {
+              if (!that.changed) {
+                that.collapsed = !that.collapsed;
+              }
+              that.changed = false;
+            }
+        );
+      },
+
+      textChanged: function () {
+        console.log("Text changed:\n %s", this.text);
+
+        if (typeof this.text == "string" && this.text.trim().length <= 0) {
+          return;
+        }
+
+        // get a formatter for the specified language
+        if ((typeof this.lang != 'undefined') && (typeof this.codeLang[this.lang] == 'function')) {
+          this.formattedCode = this.codeLang[this.lang](this.text);
+          this.$.code.innerHTML = PR.prettyPrintOne(this.formattedCode, this.lang, this.number);
+        } else {
+          this.$.code.innerHTML = PR.prettyPrintOne(this.text);
+        }
+
+        if (typeof this.text == 'object') {
+          this.inlinetext = JSON.stringify(this.text);
+        } else if (typeof this.text == 'string') {
+          this.inlinetext = this.text.replace(/(\r\n|\n|\r)/gm, "");
+        }
+      },
+
+      numberingChanged: function () {
+        var parsedInt = parseInt(this.numbering);
+        if (!isNaN(parsedInt)) {
+          this.number = parsedInt
+        } else {
+          this.number = this.numbering == "true" ? true : false
+        }
+        this.textChanged();
+
+      },
+      // Thanks Ryan Seddon! (https://github.com/ryanseddon/markdown-component)
+      // Remove all leading/trailing whitespace so it's not confused as
+      // a code block
+      trim: function (str) {
+        return str.replace(/^[^\S\n]+/gm, '');
+      },
+
+
+      /**
+       * ##### CUSTOM FORMATTER #####
+       */
+      parsAndFormatJson: function (string) {
+        console.log(string);
+
+        if (typeof  string == 'object') {
+          return JSON.stringify(string, null, 2);
+        } else if (typeof string == 'string') {
+          if (string.trim().length > 0) {
+            return JSON.stringify(JSON.parse(string), null, 2);
+          }
+        }
+        return "Parsing Error";
+      },
+
+      handelopen: function (event, detail, sender) {
+        this.$.collapse.toggle();
+        if (this.collapsed) {
+          this.collapsed = false;
+          this.changed = true;
+        }
+      }
+    });
+  </script>
+</polymer-element>

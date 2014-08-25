@@ -1,0 +1,592 @@
+<!--
+
+The `mqtt-connection` element creates an MQTT connection via WebSockets
+
+@element mqtt-connection
+@homepage https://github.com/sandro-k/mqtt-connection
+
+-->
+
+
+
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../mqtt-subscription-ui/mqtt-subscription-ui.html"/>
+
+<!--todo(sandro-k) make mows a bower dependency -->
+<script src="mows/mows.js"></script>
+<script src="bundel.js"></script>
+<script src="../underscore/underscore.js"></script>
+
+<polymer-element name="mqtt-connection" constructor="MqttConnection">
+
+<template>
+  <div id="container"></div>
+</template>
+
+<script>
+
+Polymer("mqtt-connection", {
+
+  /**
+   * Fired when a new connection is created
+   *
+   * @event toast
+   * @param {text} the message that should be displayed to the user
+   */
+
+  publish: {
+    /**
+     * If `autoConnect` is set the element will try to automatically connect to the MQTT-Broker
+     * note that `hostname` needs to be set as well
+     *
+     * @attribute autoConnect
+     * @type boolean
+     * @default false
+     */
+    autoConnect: false,
+
+    /**
+     * The URL of the MQTT-Broker the connection is made to.
+     * Login credentials can be given inline like `ws://[USER:PASSWORD@]broker.mqttdashboard.com:[PORT]`
+     * or set via `user`, `password` and `port`
+     *
+     * @attribute hostname
+     * @type string
+     * @default ''
+     * w@required
+     *
+     */
+    hostname: '',
+
+
+    /**
+     * The username that is user to authenticate the connection with
+     * @attribute username
+     * @type string
+     * @default ''
+     */
+    username: '',
+
+
+
+    /**
+     * The password that will be used to authenticate the `user` at the MQTT-Broker
+     *
+     * @attribute password
+     * @type string
+     * @default ''
+     */
+    password: '',
+
+
+    /**
+     *  This is just a flag whether or not the password should be hashed
+     *  @attribute passwordHashFunction
+     *  @type boolean
+     *  @default true
+     */
+    passwordHashFunction: true,
+
+
+    /**
+     * The port the connection is made with
+     * @attibute hostPort
+     * @type number [1..2^16-1]
+     * @default 1883
+     */
+    hostPort: 1883,
+
+    /**
+     * Start a clean session
+     * @attribute cleanSession
+     * @type boolean
+     * @default true
+     */
+    cleanSession: true,
+
+
+    /**
+     * Use SSL for to encrypt the connection
+     * @attrubute useSSL
+     * @type boolean
+     * @default false
+     */
+    useSSL: false,
+
+
+    /**
+     * Seconds that the connection is kept alive in seconds
+     * @attribute keepAlive
+     * @type integer
+     * @default 120
+     */
+    keepAlive: 120,
+
+    /**
+     * The topic the last will will be published at
+     * @attribute lastWillTopic
+     * @type string
+     * @default ''
+     */
+    lastWillTopic: '',
+
+    /**
+     * The last will message that will be published at `lastWillTopic`
+     * @attribute lastWillMessage
+     * @type  string
+     * @default ''
+     */
+    lastWillMessage: '',
+
+    /**
+     * The QoS the last will will be published with
+     * @attribute lastWillQoS
+     * @type integer (0|1|2)
+     * @default 0
+     */
+    lastWillQoS: 0,
+
+
+    /**
+     * @attribute lastWillRetained
+     * @type boolean
+     * @default false
+     */
+    lastWillRetained: false,
+
+
+    /**
+     * @attribute autoConnect
+     * @type boolean
+     * @default false
+     */
+    autoConnect: true,
+
+
+    /**
+     * A flag that indicates whether or not the connection is connected
+     * @attribute connected
+     * @type boolean
+     * @default false
+     */
+    connected: null,
+
+
+    /**
+     * A object that holds all `mqtt-subscription` elements each subscription is stored at subscriptions.topic
+     * @attribute subscriptions
+     * @type object
+     * @default {}
+     */
+    subscriptions: {},
+
+
+    /**
+     * A human readable name for the connection
+     * @attribute connectionName
+     * @type string
+     * @default ''
+     */
+    connectionName: '',
+
+
+    /**
+     * A ID to identify the connection
+     * @attribute connectionID
+     * @type string
+     * @default ''
+     */
+    connectionID: '',
+
+    /**
+     * A human readable name for the connection
+     * @attribute connectionName
+     * @type string
+     * @default ''
+     */
+    connectionName: '',
+
+
+    /**
+     * The base color for the connection
+     * @attribute connectionColor
+     * @type string (hex)
+     * @default ''
+     */
+    connectionColor: '',
+
+
+    /**
+     * The color shema of this connection
+     * @attribute connectionColors
+     * @type array [0..9]
+     * @default []
+     */
+    connectionColors: [],
+
+
+    /**
+     * A unique client ID to identify the client at the broker
+     * @attribute clientId
+     * @type string
+     * @default ''
+     */
+    clientId: '',
+
+
+    /**
+     * @attribute autoConnect
+     * @type boolean
+     * @default false
+     */
+    autoConnect: false,
+
+    /**
+     * @attribute useWebsocketConnectionInChrome
+     * @type boolean
+     * @default false
+     */
+    useWebsocketConnectionInChrome: false,
+
+  },
+
+  observe: {
+    'client.connected': 'connectionChanged'
+  },
+
+  created: function () {
+    // All objects and more importantly arrays need to be initialized on create
+    this.messages = {};
+    this.subscriptions = {};
+    this.subscriptions.keys = [];
+    this.connectionColors = [];
+
+  },
+  ready: function () {
+    // just for comfort
+    this.content = this.$.container;
+  },
+
+  /**
+   * Subscribes to a MQTT-topic
+   *
+   * @param {String} topic the subscription is created on
+   * @param {Object} opt_options (optional) additional options that effect the subscription type
+   * @param opt_target (optional) the target element the subscription should be appended to
+   */
+  subscribe: function (topic, opt_options, opt_target, opt_callback) {
+    console.debug("Subscribing to: \"%s\'", topic);
+    var alreadyInDom = false;
+
+    if (this.subscriptions[topic] !== undefined) {
+      console.error("Subscription to %s already exists", topic);
+      alreadyInDom = true;
+    }
+
+    // actually subscribing to the topic
+    this.client.subscribe(topic, opt_options, opt_callback);
+
+    if (!alreadyInDom) {
+      // creating the View
+      this.subscriptions[topic] = new MqttSubscriptionUI();
+      this.subscriptions[topic].connectionID = this.connectionID;
+      this.subscriptions.keys.push(topic);
+    }
+
+    // start listening to view events
+    var self = this;
+    this.subscriptions[topic].addEventListener("unsubscribe", function (e, detail, sender) {
+      self.asyncFire('toast', {text: "Removed subscription to "+ e.detail.topic});
+      self.unsubscribe(e.detail.topic)
+    });
+
+    this.subscriptions[topic].addEventListener("saveSub", function (e, detail, sender) {
+      // TODO(sandro-k) handel event
+    });
+
+    this.subscriptions[topic].addEventListener("pause", function (e, detail, sender) {
+      // TODO(sandro-k) handel event
+    });
+
+    // setting the view topic
+    this.subscriptions[topic].topic = topic;
+
+    if (!alreadyInDom) {
+      // adding MqttSubscriptionUI to DOM
+      if (opt_target !== undefined) {
+        this.subscriptions[topic].target = opt_target;
+        opt_target.appendChild(this.subscriptions[topic]);
+      } else {
+        this.subscriptions[topic].target = this.content;
+        // otherwise the subscription view will be appended to the content area
+        this.content.appendChild(this.subscriptions[topic]);
+      }
+    }
+  },
+
+  // todo(sandro-k) not sure if this still works pleas check
+  /**
+   * Resubscribe to a paused subscription, where the view is still in the DOM
+   *
+   * @param {string} topic that will be subscribed to
+   */
+  reSubscribe: function (topic) {
+    var alreadyInDom = false;
+    if (this.subscriptions[topic] == undefined) {
+      console.error("Can not resubscribe to %s, subscription doesn't exist ", topic);
+      return;
+    }
+
+    // actually subscribing to the topic
+    this.client.subscribe(topic);
+
+    // start listening to view events
+    var self = this;
+    this.subscriptions[topic].addEventListener("unsubscribe", function (e, detail, sender) {
+      self.asyncFire('toast', {text: "Removed subscription to "+ e.detail.topic});
+      self.unsubscribe(e.detail.topic)
+    });
+
+    this.subscriptions[topic].addEventListener("saveSub", function (e, detail, sender) {
+      // TODO(sandro-k) handel event
+    });
+
+    this.subscriptions[topic].addEventListener("pause", function (e, detail, sender) {
+      // TODO(sandro-k) handel event
+    });
+
+    // setting the view topic
+    this.subscriptions[topic].topic = topic;
+  },
+
+  unsubscribe: function (topic) {
+    if (this.subscriptions[topic] !== undefined) {
+      // unsubscribe
+      this.client.unsubscribe(topic);
+
+      // remove from DOM
+      this.subscriptions[topic].removeFromDOM();
+
+      // delete reference
+      delete this.subscriptions[topic];
+
+      this.subscriptions.keys
+
+      this.subscriptions.keys = _.without(this.subscriptions.keys, topic);
+
+    } else {
+      console.error("Subscription to %s doesn't exists, can't unsubscribe", topic);
+    }
+  },
+
+  unsubscribeEvent: function (e, detail, sender) {
+    // we will receive `unsubscribeEvent` from `mqtt-subscription-ui` elements
+    console.debug("unsubscribeEvent");
+    //todo check if connectionID is the same as this ones
+    this.unsubscribe(e.detail.topic);
+
+  },
+
+  mqttPublish: function (topic, message, opt_options, opt_callback) {
+    this.client.publish(topic, message, opt_options, opt_callback);
+  },
+
+  onMessage: function (topic, payload, object) {
+    // add a timestamp to the message as it has none
+    object.timestamp = Date.now();
+    object.connectionName = this.connectionName;
+    object.connectionID =   this.connectionID;
+    if (this.subscriptions[topic]) {
+      // add message to viewModel
+      this.subscriptions[topic].addMessage(object);
+    } else {
+      var self = this;
+      _.each(_.keys(this.subscriptions), function (key) {
+        if(key.indexOf('+') > -1){
+          var sub = key.substring(0,key.indexOf('+'));
+
+          if (topic.indexOf(sub) > -1) {
+            // need to check if last char is '/' is zero or one and last char is '/'
+            // if the topic is aa/bb and the subscription is to aa/+
+            // topic.substring(key.indexOf('+')) will be bb and match(/\//g) will count the
+            // occurrences of '/'
+            // if no '/' is present [] will assure that the .length attrubte is valid
+            var substring = topic.substring(key.indexOf('+'));
+            var count = (substring.match(/\//g) || [] ).length;
+            if (count == 0){
+              self.subscriptions[key].addMessage(object);
+            } else if (count == 1 && (substring.slice(-1) == '/' ) ){
+              self.subscriptions[key].addMessage(object);
+            }
+
+
+          }
+        } else if (key.indexOf('#') > -1){
+          var sub = key.substring(0,key.indexOf('#'));
+
+          if (topic.indexOf(sub) > -1) {
+            self.subscriptions[key].addMessage(object);
+          }
+        } else {
+          console.error("Received message to subscription we don't have: %s, %s, %s", topic, payload, object)
+        }
+      });
+    }
+  },
+
+  messagesChanged: function () {
+  },
+
+
+  domReady: function () {},
+
+  end: function () {
+    this.client.end();
+  },
+
+  connect: function () {
+    if (!this.client) {
+      this.createClient();
+    } else {
+      this.client.connect();
+    }
+  },
+
+  disconnect: function () {
+    if (this.client) {
+      this.client.end();
+    }
+  },
+
+  reconnect: function () {
+    // need to use a private method to reconnect otherwise we have to recreate the connection
+    this.client._reconnect()
+    var self = this;
+    _.each(this.subscriptions, function(item) {
+      self.reSubscribe( item.topic );
+    });
+
+  },
+
+  createClient: function () {
+    var options = { clean: true,
+      protocolId: "MQIsdp",
+      protocolVersion: 3,
+      keepalive: this.keepAlive,
+      clientId: this.clientId,
+      encoding: "utf8",
+      clean: this.cleanSession
+    };
+
+    if (this.lastWillTopic.length > 0
+        && this.lastWillMessage.length > 0){
+
+      options.will = {};
+      options.will.topic = this.lastWillTopic;
+      options.will.payload = this.lastWillMessage;
+      options.will.qos = this.lastWillQoS;
+      options.will.retain =  this.lastWillRetained;
+    }
+
+    if (this.username != '' && this.password != '') {
+      options.username = this.username;
+      options.password = this.password;
+    }
+
+    this.hostPort = parseInt(this.hostPort);
+
+
+    console.log("Type of require %s", typeof require);
+    console.log(this.useWebsocketConnectionInChrome);
+
+    if (require
+        && typeof require == 'function'
+        && window.chrome.runtime.reload
+        && typeof window.chrome.runtime.reload == 'function'
+        && !this.useWebsocketConnectionInChrome) {
+
+      var net = require('chrome-net');
+      var mqtt = require('mqtt');
+
+      var port = this.hostPort;
+      var host = this.hostname;
+
+      var builder = function() {
+        return net.createConnection(port, host);
+      };
+
+      this.client = new mqtt.MqttClient(builder, options);
+    } else {
+      this.client = mows.createClient(this.hostPort, this.hostname, options);
+    }
+
+    this.client.on('connect', function(){
+      console.log('Client Connected');
+    });
+
+    this.client.on('error', function(e){
+      console.log('Client Error:', e);
+    });
+
+    this.connected = this.client.connected;
+    // pass an optional 'ws://localhost:port' here.
+    // save reference to this element to reroute messages
+    var self = this;
+
+    this.client.on('message', function (topic, message, object) {
+      self.onMessage(topic, message, object);
+    });
+  },
+
+
+  /**
+   * ##### WATCHES #####
+   */
+
+  connectionChanged: function (oldValue, newValue){
+    this.connected = newValue;
+
+    if (newValue && (oldValue !== undefined)) {
+      this.asyncFire("toast", {text: "Connection established to: "+ this.hostname, status: "ok"});
+    } else if (!newValue && (oldValue !== undefined)) {
+      this.asyncFire("toast", {text: "Connection lost to: "+ this.hostname, status: "error"});
+    } else if (oldValue !== undefined) {
+      this.asyncFire("toast", {text: "Connection to: "+ this.hostname + "failed", status: "error"});
+    }
+  },
+
+  connectionColorChanged: function() {
+    this.connectionColors[0] = this.connectionColor;
+    for (var i = 1; i< 10; i++) {
+      this.connectionColors[i] = this.shadeColor(this.connectionColor, 0.10*i);
+    }
+
+  },
+
+  updateConnection: function(conValues) {
+    for (var property in this.publish) {
+      if (conValues[property]) {
+        this[property] = conValues[property];
+      }
+    }
+  },
+
+  /**
+   * ##### HELPER FUNCTIONS #####
+   */
+
+  /**
+   * A helper function to lighten or darken colors
+   * @param color the color without or without the datsh (#)
+   * @param percent how mutch the color should be lightend or darkend [0.00, 1.00]
+   * @returns {string} the color in hex with the dash (#)
+   */
+  shadeColor: function (color, percent) {
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+  }
+
+
+});
+</script>
+</polymer-element>

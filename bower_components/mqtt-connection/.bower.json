@@ -1,0 +1,33 @@
+{
+  "name": "mqtt-connection",
+  "authors": [
+    "Sandro Kock <sandro.kock@gmail.com>"
+  ],
+  "description": "A mqtt connection via webcomponents",
+  "keywords": [
+    "mqtt",
+    "webcomponents",
+    "polymer"
+  ],
+  "main": "mqtt-connection.html",
+  "license": "MIT",
+  "homepage": "https://github.com/sandro-k/mqtt-connection",
+  "private": false,
+  "ignore": [
+    "node_modules"
+  ],
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
+    "mqtt-subscription-ui": "sandro-k/mqtt-subscription-ui#master"
+  },
+  "_release": "9ee73ff84f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9ee73ff84feec491c9fb8c4671fdd55c983fee96"
+  },
+  "_source": "git://github.com/sandro-k/mqtt-connection.git",
+  "_target": "master",
+  "_originalSource": "sandro-k/mqtt-connection"
+}

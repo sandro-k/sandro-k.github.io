@@ -1,0 +1,22 @@
+{
+    "name": "changeover-icon",
+    "version": "0.0.1",
+    "authors": [
+        "Sandro Kock <sandro.kock@gmail.com>"
+    ],
+    "description": "A Polymer element that has two icons which are swapped on click",
+    "keywords": [
+        "icon",
+        "webcomponents",
+        "polymer"
+    ],
+    "main": "changeover-icon.html",
+    "license": "MIT",
+    "homepage": "https://github.com/sandro-k/changeover-icon.html",
+    "private": false,
+    "ignore": [],
+    "dependencies": {
+        "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
+        "core-elements": "Polymer/core-elements#~0.3.3"
+    }
+}

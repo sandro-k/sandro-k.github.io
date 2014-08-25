@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Demo code-pretty</title>
+  <script src="../../bower_components/platform/platform.js"></script>
+  <link rel="import" href="code-pretty.html">
+
+</head>
+<body unresolved>
+<polymer-element name="demo-tag">
+  <!-- outermost template defines the element's shadow DOM -->
+  <template>
+    <input value="{{numbering}}">
+    <button onclick="document.querySelector('code-pretty').toggle()">collapse</button>
+
+    <code-pretty lang="json" numbering="{{numbering}}">
+      {
+      "id": "387",
+      "name": "greenhouse",
+      "description": "The sensorbox of the greenhouse on my terrace",
+      "datastreams": [
+      {
+      "id": "9347",
+      "name": "temperature",
+      "description": "Temperature"
+      },
+      {
+      "id": "9348",
+      "name": "Humidity",
+      "description": "Humidity"
+      }
+      ]
+      }
+    </code-pretty>
+    <br/>
+    <code-pretty lang="json" text="{{text}}" numbering="{{numbering}}">
+    </code-pretty>
+    <br/>
+    <code-pretty lang="json" text="{{test}}" numbering="{{numbering}}">
+    </code-pretty>
+  </template>
+  <script>
+    Polymer('demo-tag', {
+      ready: function() {
+        // populate the element’s data model
+        this.numbering = 3;
+        this.text = { "Hello": "World!"};
+
+
+        this.text2 = JSON.stringify({ "Hello": "World!"}, null, 2);
+
+        var object = {"id":"387","name":"greenhouse","description":"The sensorbox of the greenhouse on my terrace","datastreams":[{"id":"9347","name":"temperature","description":"Temperature"},{"id":"9348","name":"Humidity","description":"Humidity"}]};
+
+        this.test = JSON.stringify(object, null, 2);
+      }
+    });
+  </script>
+</polymer-element>
+
+
+<demo-tag></demo-tag>
+
+
+
+
+
+</body>
+</html>

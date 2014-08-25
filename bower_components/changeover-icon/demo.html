@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>changeover-icon demo</title>
+  <script src="../../bower_components/platform/platform.js"></script>
+  <link rel="import" href="changeover-icon.html"/>
+  <link rel="import" href="../../bower_components/core-icons/core-icons.html">
+</head>
+<body fullbleed unresolved>
+
+
+
+
+<polymer-element name="demo-tag">
+  <template>
+    <h1>Just tap on the icons</h1>
+    <changeover-icon icon="add"
+                     up="add"
+                     down="arrow-drop-down">
+    </changeover-icon>
+    <template repeat="{{ icon in icons }}">
+
+      <changeover-icon icon="add"
+                       up="{{icon}}"
+                       down="arrow-drop-down">
+                       </changeover-icon>
+
+    </template>
+  </template>
+<script>
+  Polymer('demo-tag', {
+    publish: {
+      icons: []
+    },
+
+    created: function () {
+      this.icons = ['add', 'account-circle', 'bug-report'];
+    }
+  });
+</script>
+
+</polymer-element>
+
+<demo-tag>
+
+</demo-tag>
+
+</body>
+</html>

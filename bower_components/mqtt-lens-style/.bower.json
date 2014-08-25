@@ -1,0 +1,35 @@
+{
+  "name": "mqtt-lens-style",
+  "authors": [
+    "Sandro Kock <sandro.kock@gmail.com>"
+  ],
+  "description": "The styles for the mqtt lens application",
+  "main": [
+    "global.scss"
+  ],
+  "keywords": [
+    "mqtt-lens"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sandro-k/mqtt-lens-style",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "*.scss",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass-official": "twbs/bootstrap-sass"
+  },
+  "_release": "ef2befcea3",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "ef2befcea327c40dc15fd9633fdcc493cfb6e043"
+  },
+  "_source": "git://github.com/sandro-k/mqtt-lens-style.git",
+  "_target": "master",
+  "_originalSource": "sandro-k/mqtt-lens-style"
+}

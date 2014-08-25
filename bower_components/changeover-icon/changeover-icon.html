@@ -1,0 +1,94 @@
+<!--
+
+The `changeover-icon` element has two icons that switch on click
+
+@element changeover-icon
+@homepage https://github.com/sandro-k/changeover-icon
+
+-->
+
+<!-- import polymer-->
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../core-icon/core-icon.html"/>
+<link rel="import" href="../core-icons/core-icons.html"/>
+
+<polymer-element name="changeover-icon"  attributes="up, down, icon" on-click="{{toggle}}" constructor="ChangeoverIcon">
+
+  <template>
+    <style>
+      :host([disabled]) core-icon{
+        color: #d3d3d3;
+      }
+    </style>
+    <core-icon icon="{{icon}}" icon="{{icon}}"><content></content></core-icon>
+  </template>
+
+  <script>
+    Polymer('changeover-icon', {
+      publish: {
+        /**
+         * The default icon that will be loaded
+         *
+         * @attribute icon
+         * @type string
+         * @default ''
+         */
+        icon : '',
+
+        /**
+         * The state the icon is in up or down, status == false ? up : down
+         *
+         * @attribute status
+         * @type boolean
+         * @default false
+         */
+        status : false,
+
+        /**
+         * The icon that is loaded on `status == false`
+         *
+         * @attribute up
+         * @type string
+         * @default ''
+         */
+        up : '',
+
+        /**
+         * The icon that is loaded on `status == true`
+         *
+         * @attrubute down
+         * @type string
+         * @default ''
+         */
+        down : '',
+
+        /**
+         * To disable the element set `disabled`  to true
+         *
+         * @attribute disabled
+         * @type boolean
+         * @default false
+         */
+        disabled: false
+      },
+
+      created: function () {},
+
+      ready: function () {},
+
+
+      toggle: function () {
+        if (!this.disabled){
+          if (this.icon === this.down) {
+            this.icon = this.up;
+          } else {
+            this.icon = this.down;
+          }
+          this.status != this.status;
+        }
+      }
+    });
+  </script>
+
+
+</polymer-element>
