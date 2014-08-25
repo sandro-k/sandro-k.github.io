@@ -35,11 +35,11 @@
     "changeover-icon": "sandro-k/changeover-icon#master",
     "mqtt-lens-style": "sandro-k/mqtt-lens-style#master"
   },
-  "_release": "c56c67f4d4",
+  "_release": "4d45ba9dfb",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "c56c67f4d41e76ea4ae35a31bdcb666a3f41eb45"
+    "commit": "4d45ba9dfb23f26e6e2a41a99deafbdead39ddba"
   },
   "_source": "git://github.com/sandro-k/mqtt-lens.git",
   "_target": "master",

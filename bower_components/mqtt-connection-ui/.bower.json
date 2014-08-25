@@ -30,11 +30,11 @@
     "mqtt-lens-style": "sandro-k/mqtt-lens-style#master",
     "changeover-icon": "sandro-k/changeover-icon#master"
   },
-  "_release": "b2c7fbc055",
+  "_release": "fef190d6f7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "b2c7fbc055d2fc447bdb6b1ac48e8434956b011b"
+    "commit": "fef190d6f7a85b99ea62c740b56a567a00008c35"
   },
   "_source": "git://github.com/sandro-k/mqtt-connection-ui.git",
   "_target": "master",

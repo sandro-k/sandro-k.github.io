@@ -21,11 +21,11 @@
     "polymer": "Polymer/polymer#>=0.3.0 <1.0.0",
     "mqtt-subscription-ui": "sandro-k/mqtt-subscription-ui#master"
   },
-  "_release": "9ee73ff84f",
+  "_release": "b2f22a9bf6",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "9ee73ff84feec491c9fb8c4671fdd55c983fee96"
+    "commit": "b2f22a9bf61c318cee6156dbe107f9f7f68a85fe"
   },
   "_source": "git://github.com/sandro-k/mqtt-connection.git",
   "_target": "master",

@@ -501,7 +501,7 @@ Polymer("mqtt-connection", {
 
     if (require
         && typeof require == 'function'
-        && window.chrome.runtime.reload
+        && this.checkForChromeAppRuntime()
         && typeof window.chrome.runtime.reload == 'function'
         && !this.useWebsocketConnectionInChrome) {
 
@@ -536,6 +536,14 @@ Polymer("mqtt-connection", {
     this.client.on('message', function (topic, message, object) {
       self.onMessage(topic, message, object);
     });
+  },
+
+  checkForChromeAppRuntime: function () {
+    if (window && window.chrome && window.chrome.runtime && window.chrome.runtime.reload) {
+      return true;
+    } else {
+      return false;
+    }
   },
 
 
