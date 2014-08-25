@@ -1,18 +1,3 @@
-# MQTTLens Chrome App
+# MQTTLens Online Demo
 
-## Get started
-
-`git clone https://github.com/sandro-k/MQTTLensChromeApp.git`
-
-`npm install`
-
-`bower install`
-
-`grunt`
-
-
-Navigate to `chrome://extensions/` in Chrome and load the `build` folder as a Chrome App
-
-## Live reload 
-
-`grunt watch`
+Try MQTTLens at [http://sandro-k.github.io/](http://sandro-k.github.io/)
