@@ -25,16 +25,16 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.3.3",
-    "underscore": "~1.6.0",
+    "polymer": "~0.5.5",
+    "underscore": "~1.8.2",
     "mqtt-lens-style": "sandro-k/mqtt-lens-style#master",
     "changeover-icon": "sandro-k/changeover-icon#master"
   },
-  "_release": "fef190d6f7",
+  "_release": "73d306a864",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "fef190d6f7a85b99ea62c740b56a567a00008c35"
+    "commit": "73d306a86452d7eb6a7bb1df73c7ffff51483225"
   },
   "_source": "git://github.com/sandro-k/mqtt-connection-ui.git",
   "_target": "master",

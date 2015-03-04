@@ -25,18 +25,18 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.3.3",
+    "polymer": "~0.5.5",
     "moment": "~2.7.0",
     "google-code-prettify": "~1.0.1",
     "core-elements": "Polymer/core-elements#~0.3.3",
     "code-pretty": "sandro-k/code-pretty#master",
     "mqtt-message-detail-ui": "sandro-k/mqtt-message-detail-ui#master"
   },
-  "_release": "13052ca555",
+  "_release": "239a4b1617",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "13052ca555214d2dcb47319929c7c63d88ef0154"
+    "commit": "239a4b1617feb8896575ce3b0c1958caaf1a6827"
   },
   "_source": "git://github.com/sandro-k/mqtt-message-ui.git",
   "_target": "master",

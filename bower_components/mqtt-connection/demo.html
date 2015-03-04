@@ -31,27 +31,19 @@
     <h1>Create a connection</h1>
     Broker URL: <input value="{{hostname}}" a>
     <button on-tap="{{connect}}" >create connection</button>
-    <button on-tap="{{createConnection2}}" >create connection2</button>
     <button on-tap="{{disconnect}}" disabled?="{{!connected}}">disconnect</button>
     <button on-tap="{{reconnect}}" disabled?="{{connected}}">reconnect</button>
-
     <span>Connected: {{connected}}</span>
-
     <hr/>
     <h1>Create subscription</h1>
     Topic: <input value="{{subscriptionTopic}}">
     <button on-tap="{{createSubscription}}" disabled?="{{!connected}}">create Subscription</button>
     <button on-tap="{{removeSubscription}}" disabled?="{{!connected}}">remove Subscription</button>
-
-
-
-
     <hr/>
     <h1>Publish</h1>
     Payload: <input value="{{messagePayload}}">
     Topic: <input value="{{messageTopic}}">
     <button on-tap="{{sendMessage}}" disabled?="{{!connected}}">Send message</button>
-
     <hr/>
     <h1>Subscriptions</h1>
 
@@ -61,8 +53,6 @@
     <div id="extra">
       <h2>extra</h2>
     </div>
-
-
     <paper-toast id="toast" status="{{toaststatus}}"></paper-toast>
   </template>
 
@@ -72,8 +62,6 @@
     Polymer('demo-tag', {
 
       toaststatus: '',
-      test1: 'test1',
-      test2: 'test2',
 
       observe: {
         'mqttCon.connected': 'connectionChanged'
@@ -85,9 +73,7 @@
 
       ready: function () {
         this.connected = false;
-        //ws:broker.mqttdashboard.com:8000
         this.defaultServer = "ws://test.mosquitto.org:8080/mqtt";
-//        this.defaultServer = "ws:broker.mqttdashboard.com:8000";
         this.hostname =  this.defaultServer;
         this.messagePayload = "Hello World";
         this.messageTopic = "presence";
@@ -97,7 +83,6 @@
         this.$.content.appendChild(this.mqttCon);
 
         this.toast = this.$.toast;
-        this.test1 = this.test2;
 
         var self = this;
 
@@ -116,9 +101,9 @@
         console.log("sendMessage");
         this.mqttCon.mqttPublish(this.messageTopic, this.messagePayload);
       },
+
       createSubscription: function () {
         this.mqttCon.subscribe(this.subscriptionTopic);
-//          this.mqttCon.subscribe(this.subscriptionTopic, null, this.$.extra);
       },
 
       removeSubscription: function () {
@@ -139,85 +124,19 @@
         this.mqttCon.reconnect();
       },
 
-      createConnection: function () {
-
-      },
-
-      createConnection2: function () {
-
-       var self = this;
-       var values = {
-         "ID":"",
-         "connectionName":"eclipse",
-         "connectionColor":"#ff7d69",
-         "hostname":"ws://test.mosquitto.org/mqtt",
-         "hostPort":8080,
-         "clientID":"7ILDuLmcWUyTiLJvDhvMg7XZxyPh0PaM",
-         "cleanSession":true,
-         "useSSL":true,
-         "keepAlive":120,
-         "username":"Sandro",
-         "password":"test",
-         "passwordHashFunction":true,
-         "lastWillTopic":"topic",
-         "lastWillMessage":"message",
-         "lastWillQoS":0,
-         "lastWillRetained":true,
-         "autoConnect":true};
-
-
-        var newConnectionUI = new MqttConnectionUi();
-
-//        newConnectionUI.addElementListener('domReady', function () {
-//          newConnectionUI.load(values);
-//        });
-        newConnectionUI.connectionName = "test";
-        newConnectionUI.load(values)
-
-
-        newConnectionUI.addEventListener("newMqttConnection", function(e) {
-          console.log(e.detail);
-          var conValues = e.detail;
-          self.mqttCon.createClient();
-          self.mqttCon.hostname =  conValues.hostname+":"+conValues.hostPort;
-
-          self.connected = true;
-
-        });
-       this.shadowRoot.appendChild(newConnectionUI);
-
-       newConnectionUI.toggle();
-      },
-
-
       /**
        * ##### WATCHES ####
        */
-
       connectionChanged: function (oldValue, newValue){
-        console.log("Old: %s, new: %s", oldValue, newValue);
-        console.log(arguments);
         this.connected = newValue;
       }
+
     });
   </script>
 </polymer-element>
 
 <demo-tag></demo-tag>
 
-
-
-
-<!--<script>-->
-<!--window.addEventListener('polymer-ready', function (e) {-->
-<!--//    var mqttCon = new MqttConnection();-->
-<!--//        console.log(mqttCon);-->
-<!--//    mqttCon.createClient("ws:localhost:9371");-->
-<!--//    mqttCon.subscribe('presence');-->
-<!--//    mqttCon.publish('presence', 'Hello mqtt');-->
-
-<!--});-->
-<!--</script>-->
 
 </body>
 </html>

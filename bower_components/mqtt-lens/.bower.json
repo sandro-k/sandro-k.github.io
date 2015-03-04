@@ -3,7 +3,7 @@
   "authors": [
     "Sandro Kock <sandro.kock@gmail.com>"
   ],
-  "description": "A polymer element that loads the MQTTLensApp",
+  "description": "A polymer element that is the MQTTLens App",
   "main": [
     "mqtt-lens.html"
   ],
@@ -20,26 +20,29 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "css/*.scss",
+    "src",
     "test",
-    "tests"
+    "tests",
+    "Gruntfile.js",
+    "package.json",
+    "build/css/*.map"
   ],
   "dependencies": {
-    "polymer": "~0.3.3",
-    "moment": "~2.7.0",
-    "core-elements": "Polymer/core-elements#~0.3.3",
+    "core-elements": "Polymer/core-elements#~0.5.5",
     "mqtt-connection": "sandro-k/mqtt-connection#master",
     "mqtt-subscription-ui": "sandro-k/mqtt-subscription-ui#master",
     "mqtt-message-ui": "sandro-k/mqtt-message-ui#master",
     "mqtt-connection-ui": "sandro-k/mqtt-connection-ui#master",
     "changeover-icon": "sandro-k/changeover-icon#master",
-    "mqtt-lens-style": "sandro-k/mqtt-lens-style#master"
+    "mqtt-lens-style": "sandro-k/mqtt-lens-style#master",
+    "core-localstorage": "Polymer/core-localstorage#~0.5.5",
+    "polymer": "~0.5.5"
   },
-  "_release": "4d45ba9dfb",
+  "_release": "26da716da4",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "4d45ba9dfb23f26e6e2a41a99deafbdead39ddba"
+    "commit": "26da716da41ad8ac354f6ae13acfb591b729a7ca"
   },
   "_source": "git://github.com/sandro-k/mqtt-lens.git",
   "_target": "master",

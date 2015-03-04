@@ -25,16 +25,16 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.3.3",
-    "moment": "~2.7.0",
+    "polymer": "~0.5.5",
+    "moment": "~2.9.0",
     "mqtt-lens-style": "sandro-k/mqtt-lens-style#master",
-    "core-elements": "Polymer/core-elements#~0.3.3"
+    "core-elements": "Polymer/core-elements#~0.5.5"
   },
-  "_release": "efc00c5e33",
+  "_release": "98c9dd1c19",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "efc00c5e33b6cc313ec291ecf77b89f2d56c02cc"
+    "commit": "98c9dd1c1951504755e72862de12b24ec1b388fd"
   },
   "_source": "git://github.com/sandro-k/mqtt-message-detail-ui.git",
   "_target": "master",

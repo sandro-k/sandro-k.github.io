@@ -1,3 +1,3 @@
-# MQTTLens Online Demo
+# MQTTLens Web Online Demo
 
 Try MQTTLens at [http://sandro-k.github.io/](http://sandro-k.github.io/)
