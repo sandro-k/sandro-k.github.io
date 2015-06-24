@@ -1,0 +1,316 @@
+<link rel="import" href="../bower_components/marked-element/marked-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+
+<link rel="import" href="talk-element.html">
+
+<dom-module id="demo-greeting">
+  <template>
+    <span>{{greeting}}</span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'demo-greeting',
+    properties: {
+      greeting: {
+        type: String,
+        value: 'Hello world!'
+      }
+    }
+  });
+</script>
+
+
+<dom-module id="demo-binding">
+  <template>
+    <div>{{greeting}}</div>
+    <input value="{{greeting::input}}">
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'demo-binding',
+    properties: {
+      greeting: {
+        type: String,
+        value: 'Hello world!',
+        notify: true
+      }
+    }
+  });
+</script>
+
+
+<dom-module id="demo-binding2">
+  <template>
+    <div>[[greeting]]</div>
+    <input value="{{greeting::input}}">
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'demo-binding2',
+    properties: {
+      greeting: {
+        type: String,
+        value: 'Hello world2!',
+        notify: true
+      }
+    }
+  });
+</script>
+
+<dom-module id="user-view">
+  <template>
+    First: <span>{{user.first}}</span><br>
+    Last: <span>{{user.last}}</span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'user-view',
+    properties: {
+      user: Object
+    }
+  });
+</script>
+
+<dom-module id="user-content">
+  <template>
+    <content></content>
+    First: <span>{{user.first}}</span><br>
+    Last: <span>{{user.last}}</span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'user-content',
+    properties: {
+      user: Object
+    }
+  });
+</script>
+
+<dom-module id="user-computed">
+  <template>
+    My name is <span>{{computeFullName(first, last)}}</span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'user-computed',
+    properties: {
+      first: String,
+      last: String
+    },
+    computeFullName: function (first, last) {
+      return first + ' ' + last;
+    }
+  });
+</script>
+
+<dom-module id="value-computed">
+  <template>
+    <div>
+      <input is="iron-input" bind-value="{{prop}}" value="{{value::input}}" type="number" preventInvalidInput="true">
+    </div>
+    <span>{{prop}}</span> * 2 = <span>{{computedProp}}</span>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "value-computed",
+    properties: {
+      prop: Number,
+      computedProp: {
+        type: String,
+        computed: 'computeProp(prop)'
+      }
+    },
+    computeProp: function (propValue) {
+      return propValue * 2;
+    }
+  });
+</script>
+
+<dom-module id="attr-bind">
+  <style>
+    .blue {
+      background: lightblue;
+    }
+
+    .red {
+      background: lightcoral;
+    }
+
+    .green {
+      background: lightgreen;
+    }
+
+    .yellow {
+      background: lightyellow;
+    }
+  </style>
+  <template>
+    <span class$="{{value}}">Change my color</span>
+    <br/>
+    <input type="text" value="{{value::input}}"/>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'attr-bind',
+    properties: {
+      value: {
+        type: String
+      }
+    }
+  });
+</script>
+
+
+<dom-module id="style-demo">
+  <style>
+    :host {
+      --style-demo-bg-color: #2082ac;
+      background: var(--style-demo-bg-color);
+      color: #FFF;
+    }
+  </style>
+  <template>
+    <content></content>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'style-demo'
+  });
+</script>
+
+<dom-module id="demo-event">
+  <template>
+    <input type="text" value="{{value::input}}"/>
+    <button on-click="handleTab">Kick Me</button>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'demo-event',
+    properties: {
+      value: {
+        type: String,
+        observer: 'valueChanged'
+      }
+    },
+    valueChanged: function (newValue, oldValue) {
+      console.log("New: %s, Old: %s, ", newValue, oldValue);
+    },
+    handleTab: function (e) {
+      console.log(e);
+    }
+  });
+</script>
+
+
+<dom-module id="custom-event">
+  <template>
+    <button on-click="handleClick">
+      Custom Event
+    </button>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'custom-event',
+    handleClick: function (e) {
+      this.fire("customEvent");
+    }
+  });
+</script>
+
+<dom-module id="custom-event-listener">
+  <template>
+    <custom-event></custom-event>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'custom-event-listener',
+
+    listeners: {
+      customEvent: "handelCustomEvent"
+    },
+
+    handelCustomEvent: function (event) {
+      console.log(event);
+    }
+  });
+</script>
+
+<script>
+  CustomBehavior = {
+    properties: {
+      isHighlighted: {type: Boolean, value: false, notify: true, observer: '_highlightChanged'}
+    },
+    listeners: {click: '_toggleHighlight'},
+    created: function () {
+      console.log('Highlighting for ', this, +'enabled!');
+    },
+    _toggleHighlight: function () {
+      this.isHighlighted = !this.isHighlighted;
+    },
+    _highlightChanged: function (value) {
+      this.toggleClass('highlighted', value);
+    }
+  };
+</script>
+
+<dom-module id="behavior-element">
+  <template><span>{{isHighlighted}}</span></template>
+</dom-module>
+
+<script>
+  Polymer({is: 'behavior-element', behaviors: [CustomBehavior]});
+</script>
+
+
+<dom-module id="util-element">
+  <template>
+    <h3 id="topic">Topic</h3>
+    <button on-click="handelClick">Click me!</button>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'util-element',
+    handelClick: function (e) {
+//      this.toggleClass("toggle", true, this.$.topic);
+      this.$.topic.classList.toggle("toggle");
+//      this.transform('rotateX(90deg)', this.$.topic);
+//      this.translate3d('100px', '100px', '100px', this.$.topic);
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
